@@ -36,5 +36,15 @@
 # 调用 Promise.all(promises)，最后将结果返回
 # 数据的注水与脱水，将服务器生成的 store，直接挂在到 script 标签下，客服端生成 store 时，取出 store.state 做默认值，这样就不用 componentDidMount 里写初始加载代码
 
+# 用 express-http-proxy 做代理，如果使用了服务端渲染，最好所有请求都通过 node 中间层再请求后端数据，有利于排查错误
+# axios 发起请求时，服务端发起请求需要使用绝对路径，仔细思考一下这边就能理解
+# 为了让代码更加简洁，使用 axios 的 instance，axios.create 方法改写 baseURL
+# 以上的做法，每次调用 dispatch 时都需要传入 server:true | false，可以使用 redux-thunk 的 withExtraArgument 属性，传入服务端和客服端各自的 axiosInstance，这样就可以在 dispatch 中接收到这个传入的 instance，直接调用发起请求即可，原因是，dispatch 是 store 的方法，在生成 store 时可以根据不同的环境传入不同的 instance
+# 小结一下，上面主要处理的路径的问题
+# 现在客户端的请求从中间层代理，中间层做转发
+# 中间层的请求直接转向服务端，然后注入到 store 中
+
+# 多级路由使用 react-router-config 中的 renderRoutes 方法，这个方法可以循环遍历数组项，并将 子路由 传递到 props 中，就可以实现嵌套路由，这里有点类似 vue-router 的概念，使用配置来完成路由，但其实 react-router 使用的还是组件式，不过是被包装在了 react-router-config 中。
+
 - question
 1. 为什么不把 renderToString 直接实现成可以运行浏览器的代码

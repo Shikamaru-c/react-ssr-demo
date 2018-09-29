@@ -1,4 +1,5 @@
 import express from 'express'
+import proxy from 'express-http-proxy'
 import { matchRoutes } from 'react-router-config'
 import routes from '../Routes'
 import { getStore } from '../store'
@@ -6,6 +7,15 @@ import { render } from './utils'
 
 const app = express()
 app.use(express.static('public'))
+
+// 中间层代理
+app.use('/api', proxy('http://47.95.113.63', {
+  proxyReqPathResolver: function (req) {
+    // 处理请求路径，代理到 服务器
+    // 例：/api/news => /ssr/api/news
+    return '/ssr/api' + req.url
+  }
+}))
 
 app.get('*', (req, res) => {
   const store = getStore()

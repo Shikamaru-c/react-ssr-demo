@@ -1,5 +1,4 @@
 import React from 'react'
-import Header from '../../components/Header'
 import { connect } from 'react-redux'
 import { getHomeList } from './store/actions'
 
@@ -15,7 +14,6 @@ class Home extends React.Component {
   render () {
     return (
       <div>
-        <Header />
         <div onClick={this.handleClick}>Home page test.</div>
         {this.getList()}
       </div>
@@ -23,7 +21,7 @@ class Home extends React.Component {
   }
 
   componentDidMount () {
-    this.props.getHomeList()
+    // this.props.getHomeList()
   }
 }
 

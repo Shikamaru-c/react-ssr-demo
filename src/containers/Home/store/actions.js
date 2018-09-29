@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { CHANGE_LIST } from './constants'
 
 const changeList = (list) => ({
@@ -7,21 +6,11 @@ const changeList = (list) => ({
 })
 
 export const getHomeList = () => {
-  return (dispatch) => {
-    // axios.get('/mock/news.json')
-    //   .then(res => {
-    //     const list = res.data.list
-    //     dispatch(changeList(list))
-    //   })
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve([{
-          id: 1,
-          title: 'news1'
-        }])
+  return (dispatch, getState, axiosInstance) => {
+    return axiosInstance.get('/mock/news.json')
+      .then(res => {
+        const list = res.data.list
+        dispatch(changeList(list))
       })
-    }).then(list => {
-      dispatch(changeList(list))
-    })
   }
 }
