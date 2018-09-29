@@ -27,9 +27,9 @@ class Home extends React.Component {
   }
 }
 
-Home.loadData = () => {
+Home.loadData = (store) => {
   // 在服务器端渲染之前，将该路由需要的数据加载完毕
-  
+  return store.dispatch(getHomeList())
 }
 
 function mapStateToProps (state) {

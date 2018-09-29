@@ -31,7 +31,10 @@
 # 调整路由结构，成为数组结构，然后在 client 和 server 原先的 Routes 组件改为遍历数组 传入 {...route}
 # 当接收到 http 请求时，遍历 routes 找到和当前路径匹配的 route 调用其中的 loadData 方法
 # 服务器会自动发送一个 favicon 的请求，所以要设置 favicon.ico，放在 public 目录下即可
-#
+# react-router-dom 的 matchPath 只能匹配单层路由，要匹配嵌套路由使用 react-router-config 中的 matchRoutes
+# 遍历 matchRoutes 数组，将带有 loadData 的路由调用 loadData，这时需要将 loadData 的 return 结果变为 promise(其实只要在 action 中把 axios return 出来即可)，然后将 loadData 的 return 结果 push 到 promises 数组中
+# 调用 Promise.all(promises)，最后将结果返回
+# 数据的注水与脱水，将服务器生成的 store，直接挂在到 script 标签下，客服端生成 store 时，取出 store.state 做默认值，这样就不用 componentDidMount 里写初始加载代码
 
 - question
 1. 为什么不把 renderToString 直接实现成可以运行浏览器的代码

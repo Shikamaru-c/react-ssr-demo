@@ -8,12 +8,20 @@ const changeList = (list) => ({
 
 export const getHomeList = () => {
   return (dispatch) => {
-    axios.get('/mock/news.json')
-      .then(res => {
-        return res.data
+    // axios.get('/mock/news.json')
+    //   .then(res => {
+    //     const list = res.data.list
+    //     dispatch(changeList(list))
+    //   })
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve([{
+          id: 1,
+          title: 'news1'
+        }])
       })
-      .then(data => {
-        dispatch(changeList(data.list))
-      })
+    }).then(list => {
+      dispatch(changeList(list))
+    })
   }
 }
