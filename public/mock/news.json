@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "list": [
+    {
+      "id": 1,
+      "title": "news1"
+    },
+    {
+      "id": 2,
+      "title": "news2"
+    },
+    {
+      "id": 3,
+      "title": "news3"
+    },
+    {
+      "id": 4,
+      "title": "news4"
+    },
+    {
+      "id": 5,
+      "title": "news5"
+    }
+  ]
+}

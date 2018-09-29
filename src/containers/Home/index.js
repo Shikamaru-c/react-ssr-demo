@@ -1,18 +1,50 @@
 import React from 'react'
 import Header from '../../components/Header'
+import { connect } from 'react-redux'
+import { getHomeList } from './store/actions'
 
 class Home extends React.Component {
   handleClick () {
     console.log('hello, world!')
+  }
+
+  getList () {
+    const { list } = this.props
+    return list.map(news => <div key={news.id}>{news.title}</div>)
   }
   render () {
     return (
       <div>
         <Header />
         <div onClick={this.handleClick}>Home page test.</div>
+        {this.getList()}
       </div>
     )
   }
+
+  componentDidMount () {
+    this.props.getHomeList()
+  }
 }
 
-export default Home
+Home.loadData = () => {
+  // 在服务器端渲染之前，将该路由需要的数据加载完毕
+  
+}
+
+function mapStateToProps (state) {
+  return {
+    list: state.home.newsList,
+    name: state.home.name
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    getHomeList () {
+      dispatch(getHomeList())
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
