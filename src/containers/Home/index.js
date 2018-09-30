@@ -1,8 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { getHomeList } from './store/actions'
+import styles from './index.css'
+import withStyle from '../../withStyle'
 
 class Home extends React.Component {
+  componentWillMount () {
+    const { staticContext } = this.props
+    staticContext && staticContext.css.push(styles._getCss())
+  }
+
   handleClick () {
     console.log('hello, world!')
   }
@@ -25,11 +32,6 @@ class Home extends React.Component {
   }
 }
 
-Home.loadData = (store) => {
-  // 在服务器端渲染之前，将该路由需要的数据加载完毕
-  return store.dispatch(getHomeList())
-}
-
 function mapStateToProps (state) {
   return {
     list: state.home.newsList,
@@ -45,4 +47,11 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
+const ExportComponent = connect(mapStateToProps, mapDispatchToProps)(withStyle(Home, styles))
+
+ExportComponent.loadData = store => {
+  // 在服务器端渲染之前，将该路由需要的数据加载完毕
+  return store.dispatch(getHomeList())
+}
+
+export default ExportComponent

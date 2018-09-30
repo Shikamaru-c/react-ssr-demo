@@ -28,15 +28,30 @@ app.get('*', (req, res) => {
 
   matchedRoutes.forEach(item => {
     if (item.route.loadData) {
-      promises.push(item.route.loadData(store))
+      // 这里再次包装是为了，让 请求 不论是 resolve 或是 reject
+      // 在 Promise.all 里 都能执行到 .then 方法
+      const promise = new Promise(resolve => {
+        item.route.loadData(store).then(resolve, resolve)
+      })
+      promises.push(promise)
     }
   })
 
   Promise.all(promises)
     .then(() => {
-      res.send(render(store, routes, req))
+      const context = {css: []}
+      const html = render(store, routes, req, context)
+
+      if (context.action === 'REPLACE') {
+        res.redirect(301, context.url)
+      } else {
+        context.NotFound && (res.statusCode = 404)
+        res.send(html)
+      }
+
     })
     .catch(err => {
+      console.log(err)
       res.send('something don\'t run')
     })
 })

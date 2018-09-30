@@ -26,7 +26,6 @@
 # actions 里写，生成 action 的函数，和异步 action
 # reducer case type 
 # 最后将 reducer 导入到 index 中，做导出
-# ss U2FsdGVkX1
 # 服务器端不会执行 componentDidMount
 # 调整路由结构，成为数组结构，然后在 client 和 server 原先的 Routes 组件改为遍历数组 传入 {...route}
 # 当接收到 http 请求时，遍历 routes 找到和当前路径匹配的 route 调用其中的 loadData 方法
@@ -45,6 +44,17 @@
 # 中间层的请求直接转向服务端，然后注入到 store 中
 
 # 多级路由使用 react-router-config 中的 renderRoutes 方法，这个方法可以循环遍历数组项，并将 子路由 传递到 props 中，就可以实现嵌套路由，这里有点类似 vue-router 的概念，使用配置来完成路由，但其实 react-router 使用的还是组件式，不过是被包装在了 react-router-config 中。
+# 处理 cookie，因为 express-http-proxy 不处理 cookie 转发，所以导致用户登录后并携带 cookie 访问接口时，经过 中间层 转发后，cookie 就没有携带了，导致携带 cookie 的情况下 自动登录 失败，所以在创建 axiosInstance 时，处理 header
+
+# 如果单纯的做一个 NotFound 的组件，不会发送 404 code，所以在 renderHTML 时 传入一个 context，在 staticRouter 的 context:props 中传入，这个参数，会让每个组件都收到一个 staticContext 的 props，可以在 NotFound 组件中，给这个 staticContext 属性添加一个 NotFound = true 的键值，然后就可以在 render 后，判断并发送 404
+# 301重定向，如果在服务端渲染页面时发现有 Redirect 组件调用时，会在 staticContext 中自动注入一些键值，可以利用这些属性完成 301 重定向
+# 在 promises 中将 loadData:promise 再次包装 promise，这样不论 loadData 是否成功还是失败，最后都会调用 resolve，这样就可以在 Promise.all 中可以永远调用成功，保证不论 loadData 数据是否成功还是，都会渲染，即使一个请求失败，还是会等待其他请求的完成；如果不这么包装，一旦一个请求失败，就走到了 catch 流程。
+
+# 引入 css-loader，client 配置 style-loader，server 端配置 iosmorphic-style-loader
+# 使用 import styles from './index.css' 导入 css 样式时，iosmorphic-style-loader 提供了 _getCss() 方法，可以获得 css 字符串，可以将这个字符串注入到 staticContext 服务端独有的全局对象中，在 renderHTML 中注入到 HTML 文件中的 style 标签中
+# 为了让多个组件的 css 样式都能启用，把 context 下的 css 改为数组，然后拼接起来
+# 组件中的 loadData 是挂载在最原始的组件上的，之后可能要用 connect 注入 props，没有报错是因为 connect 组件把原始组件中的静态方法复制到了自己身上，这不过样看起来很不直观，应该把 loadData 挂载在导出的组件上
+# 每个组件都会引入 css 文件，所以把 componentWillMount 抽离出来，做成 HOC，这里就一定要完成 loadData 的挂载，自己写的 withStyle 组件没有把 静态方法 复制到返回出来的组件上
 
 - question
 1. 为什么不把 renderToString 直接实现成可以运行浏览器的代码
